@@ -1,0 +1,53 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model PhotoUpload {
+  createdAt DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  imageUrl  Json?
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @db.ObjectId
+}
+
+model BodyMeasurements {
+  chest     Float?
+  createdAt DateTime @default(now())
+  height    Float?
+  hips      Float?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @db.ObjectId
+  waist     Float?
+}
+
+model ClothingItem {
+  brand     String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  imageUrl  Json?
+  name      String?
+  sizeInfo  Json?
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  bodyMeasurementsItems BodyMeasurements[]
+  createdAt             DateTime           @default(now())
+  email                 String?            @unique
+  firstName             String?
+  id                    String             @id @default(auto()) @map("_id") @db.ObjectId
+  lastName              String?
+  password              String
+  photoUploads          PhotoUpload[]
+  roles                 Json
+  updatedAt             DateTime           @updatedAt
+  username              String             @unique
+}
